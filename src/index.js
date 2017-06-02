@@ -64,6 +64,36 @@ function Loading () {
   return  <div className='component'>loading</div>
 }
 
+class Search extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {value: ''}
+
+    this.handleChange = this.handleChange.bind(this)
+    this.handleClick = this.handleClick.bind(this)
+  }
+
+  handleChange(event) {
+    this.setState({value: event.target.value})
+  }
+
+  handleClick (event) {
+    let name = this.state.value
+    console.log('name: ' + name)
+    getGitProfile(name)
+    getRepos(name)
+  }
+
+  render() {
+    return (
+      <div className="search">
+        <input type="text" value={this.state.value} onChange={this.handleChange} />
+        <input onClick={this.handleClick} type="submit" value="Search" />
+      </div>
+    )
+  }
+}
+
 class App extends Component {
   render () {
     if(mainState.isLoading) {
@@ -78,6 +108,7 @@ class App extends Component {
       return (
         <div className="app">
           <Header />
+          <Search />
           { Avatar(mainState.userData) }
           { Repos(mainState.repos) }
           <Footer />
@@ -88,7 +119,7 @@ class App extends Component {
 }
 
 function renderNow () {
-  console.log('render', mainState.repos)
+  console.log('render | isLoading: ' + mainState.isLoading);
   ReactDOM.render(<App />, document.getElementById('root'))
 }
 

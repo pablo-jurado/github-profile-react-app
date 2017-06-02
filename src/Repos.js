@@ -1,7 +1,6 @@
 import React from 'react';
 
 function Repos (props) {
-
   let repos = props.map(function(repo, index) {
     return  <li key={index}>
               <h4>{repo.name}</h4>
