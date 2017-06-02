@@ -1,48 +1,62 @@
 import React, { Component } from 'react';
-import Header from './Header';
-import Body from './Body';
-import Footer from './Footer';
-import JSON from './data'
+import ReactDOM from 'react-dom';
 
-// const api = 'https://api.github.com/users/'
-// const user = 'pablo-jurado'
-// const url = api + user
-//
-// var request = new XMLHttpRequest();
-// request.open('GET', url, true);
-//
-// request.onload = function() {
-//   if (request.status >= 200 && request.status < 400) {
-//     var data = JSON.parse(request.responseText);
-//     console.log(data)
-//   } else {
-//     console.log(request.responseText)
-//   }
-// }
-//
-// request.onerror = function(e) {
-//   console.log(e)
-// }
-//
-// request.send()
-//
-// const mainState = {
-//   isLoading: true,
-//   userName: user,
-//   userDate: null
-// }
-let gitObj = JSON
-console.log(gitObj)
+import Header from './Header';
+import Wrapper from './Wrapper';
+import Footer from './Footer';
+import dataObj from './data'
+
+const api = 'https://api.github.com/users/'
+const user = 'pablo-jurado'
+const token = '?access_token=618da9b4013f02572ee90f6f07f11d43daa7abd7'
+const gitURL = api + user + token
+
+var request = new XMLHttpRequest()
+request.open('GET', gitURL, true)
+request.onload = function() {
+  if (request.status >= 200 && request.status < 400) {
+    let dataObj = JSON.parse(request.responseText)
+    mainState.isLoading = false
+    mainState.userData = dataObj
+    console.log('mainState.isLoading', mainState.isLoading)
+
+    ReactDOM.render(<App />, document.getElementById('root'))
+
+    console.log('mainState.isLoading', mainState.isLoading)
+  } else { console.log(request.responseText) }
+}
+request.onerror = (e)=> console.log(e)
+request.send()
+
+const mainState = {
+  isLoading: true,
+  userData: null
+}
+
+function Loading () {
+  return  <div className='component'>loading</div>
+}
 
 class App extends Component {
   render() {
-    return (
-      <div className="app">
-        <Header />
-        <Body data={JSON.login}/>
-        <Footer />
-      </div>
-    );
+    if(mainState.isLoading) {
+      console.log('mainState.isLoading', mainState.isLoading)
+      return (
+        <div className="app">
+          <Header />
+          <Loading />
+          <Footer />
+        </div>
+      )
+    } else {
+      return (
+        <div className="app">
+          <Header />
+          <Wrapper mainData={mainState.userData} />
+          <Footer />
+        </div>
+      )
+    }
   }
 }
 

@@ -15,5 +15,18 @@ body {
   background: #cccccc;
   color: black;
   padding: 15px;
+  /*margin: 20px;*/
+}
+
+.wrapper {
   margin: 20px;
+}
+
+.wrapper img {
+  width: 25%;
+  display: inline-block;
+}
+
+.wrapper span {
+  display: block;
 }
