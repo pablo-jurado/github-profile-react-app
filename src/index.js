@@ -5,11 +5,13 @@ import './index.css';
 
 import Header from './Header'
 import Avatar from './Avatar'
+import Feedback from './Feedback'
 import Repos from './Repos'
 import Footer from './Footer'
 
 let mainState = {
   isLoading: true,
+  isUserFound: false,
   userName: null,
   userData: null,
   repos: null
@@ -18,6 +20,7 @@ let mainState = {
 function checkIsLoading () {
   if ((mainState.userData) && (mainState.repos)) {
     mainState.isLoading = false
+    mainState.isUserFound = true
     renderNow()
   }
 }
@@ -34,12 +37,15 @@ function getGitProfile (user) {
       mainState.userData = JSON.parse(request.responseText)
       checkIsLoading()
 
-    } else { console.log(request.responseText) }
+    } else {
+      console.log('user not found', request.responseText)
+      mainState.isUserFound = false
+      renderNow()
+    }
   }
   request.onerror = (e)=> console.log(e)
   request.send()
 }
-
 
 function getRepos (user) {
   let api = 'https://api.github.com/users/'
@@ -59,11 +65,6 @@ function getRepos (user) {
 getGitProfile('pablo-jurado')
 getRepos('pablo-jurado')
 
-
-function Loading () {
-  return  <div className='component'>loading</div>
-}
-
 class Search extends React.Component {
   constructor(props) {
     super(props);
@@ -80,6 +81,7 @@ class Search extends React.Component {
   handleClick (event) {
     let name = this.state.value
     console.log('name: ' + name)
+    mainState.isLoading = true
     getGitProfile(name)
     getRepos(name)
   }
@@ -97,10 +99,13 @@ class Search extends React.Component {
 class App extends Component {
   render () {
     if(mainState.isLoading) {
+      let msg = 'loading'
+      if (!mainState.isUserFound) msg = 'Sorry User Not Found'
       return (
         <div className="app">
           <Header />
-          <Loading />
+          <Search />
+          { Feedback(msg) }
           <Footer />
         </div>
       )

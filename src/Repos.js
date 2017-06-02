@@ -5,6 +5,7 @@ function Repos (props) {
     return  <li key={index}>
               <h4>{repo.name}</h4>
               <a href={repo.html_url} target="_blank" rel="noopener noreferrer">{repo.html_url}</a>
+              <hr />
             </li>
   })
 
