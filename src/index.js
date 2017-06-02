@@ -1,38 +1,64 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+import _token from './_token'
 import './index.css';
 
 import Header from './Header'
 import Avatar from './Avatar'
+import Repos from './Repos'
 import Footer from './Footer'
-import _token from './_token'
-
-let api = 'https://api.github.com/users/'
-let user = 'pablo-jurado'
-let gitURL = api + user + _token
 
 let mainState = {
   isLoading: true,
-  userData: null
+  userName: null,
+  userData: null,
+  repos: null
 }
 
-function callAJAX () {
+function checkIsLoading () {
+  if ((mainState.userData) && (mainState.repos)) {
+    mainState.isLoading = false
+    renderNow()
+  }
+}
+
+function getGitProfile (user) {
+  let api = 'https://api.github.com/users/'
+  let gitURL = api + user + _token
   var request = new XMLHttpRequest()
   request.open('GET', gitURL, true)
   request.onload = function() {
     if (request.status >= 200 && request.status < 400) {
 
-      mainState.isLoading = false
+      mainState.userName = user
       mainState.userData = JSON.parse(request.responseText)
+      checkIsLoading()
 
-      renderNow()
     } else { console.log(request.responseText) }
   }
   request.onerror = (e)=> console.log(e)
   request.send()
 }
 
-callAJAX()
+
+function getRepos (user) {
+  let api = 'https://api.github.com/users/'
+  let gitURL = api + user + '/repos' + _token
+  var request = new XMLHttpRequest()
+  request.open('GET', gitURL, true)
+  request.onload = function() {
+    if (request.status >= 200 && request.status < 400) {
+      mainState.repos = JSON.parse(request.responseText)
+      checkIsLoading()
+    } else { console.log(request.responseText) }
+  }
+  request.onerror = (e)=> console.log(e)
+  request.send()
+}
+
+getGitProfile('pablo-jurado')
+getRepos('pablo-jurado')
+
 
 function Loading () {
   return  <div className='component'>loading</div>
@@ -53,6 +79,7 @@ class App extends Component {
         <div className="app">
           <Header />
           { Avatar(mainState.userData) }
+          { Repos(mainState.repos) }
           <Footer />
         </div>
       )
@@ -61,7 +88,7 @@ class App extends Component {
 }
 
 function renderNow () {
-  console.log('mainState.isLoading', mainState.isLoading)
+  console.log('render', mainState.repos)
   ReactDOM.render(<App />, document.getElementById('root'))
 }
 
