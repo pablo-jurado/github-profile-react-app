@@ -67,7 +67,7 @@ getRepos('pablo-jurado')
 
 class Search extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {value: ''}
 
     this.handleChange = this.handleChange.bind(this)
@@ -96,36 +96,34 @@ class Search extends React.Component {
   }
 }
 
-class App extends Component {
-  render () {
-    if(mainState.isLoading) {
-      let msg = 'loading'
-      if (!mainState.isUserFound) msg = 'Sorry User Not Found'
-      return (
-        <div className="app">
-          <Header />
-          <Search />
-          { Feedback(msg) }
-          <Footer />
-        </div>
-      )
-    } else {
-      return (
-        <div className="app">
-          <Header />
-          <Search />
-          { Avatar(mainState.userData) }
-          { Repos(mainState.repos) }
-          <Footer />
-        </div>
-      )
-    }
+function App(props) {
+  if(props.isLoading) {
+    let msg = 'loading'
+    if (!props.isUserFound) msg = 'Sorry User Not Found'
+    return (
+      <div className="app">
+        <Header />
+        <Search />
+        { Feedback(msg) }
+        <Footer />
+      </div>
+    )
+  } else {
+    return (
+      <div className="app">
+        <Header />
+        <Search />
+        { Avatar(props.userData) }
+        { Repos(props.repos) }
+        <Footer />
+      </div>
+    )
   }
 }
 
 function renderNow () {
   console.log('render | isLoading: ' + mainState.isLoading);
-  ReactDOM.render(<App />, document.getElementById('root'))
+  ReactDOM.render(App(mainState), document.getElementById('root'))
 }
 
 renderNow()
