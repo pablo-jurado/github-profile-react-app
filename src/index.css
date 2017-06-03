@@ -94,7 +94,7 @@ footer {
 
 .repos {
   flex: 2;
-  margin-right: 20px;
+  margin: 20px;
 }
 
 .repos ul {
@@ -105,4 +105,13 @@ footer {
 
 .repos hr {
   margin-top: 30px;
+}
+
+@media (max-width: 600px) {
+  .wrapper {
+    flex-direction: column;
+  }
+  .avatar, .repos {
+    flex: 1;
+  }
 }
