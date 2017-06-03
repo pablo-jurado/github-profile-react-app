@@ -89,8 +89,8 @@ class Search extends React.Component {
   render() {
     return (
       <div className="search">
-        <input type="text" value={this.state.value} onChange={this.handleChange} />
-        <input onClick={this.handleClick} type="submit" value="Search" />
+        <input type="text" placeholder="pablo-jurado" value={this.state.value} onChange={this.handleChange} />
+        <input onClick={this.handleClick} type="submit" value="Search User" />
       </div>
     )
   }
@@ -113,8 +113,10 @@ function App(props) {
       <div className="app">
         <Header />
         <Search />
-        { Avatar(props.userData) }
-        { Repos(props.repos) }
+        <div className="wrapper">
+          { Avatar(props.userData) }
+          { Repos(props.repos) }
+        </div>
         <Footer />
       </div>
     )

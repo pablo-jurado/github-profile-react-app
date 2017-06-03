@@ -10,9 +10,12 @@ function Repos (props) {
   })
 
   return (
-    <ul className="repos">
-      {repos}
-    </ul>
+    <div className="repos">
+      <h3>Repositories</h3>
+      <ul>
+        {repos}
+      </ul>
+    </div>
   )
 }
 
