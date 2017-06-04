@@ -41,7 +41,6 @@ footer {
 
 .search {
   margin: 30px 10px;
-  /*background-color: lightblue;*/
   text-align: center;
 }
 
@@ -84,7 +83,9 @@ footer {
 
 .avatar img {
   width: 75%;
+  border: solid 5px white;
   border-radius: 10px;
+  box-shadow: 0 0 20px lightgrey;
   margin: 20px;
 }
 

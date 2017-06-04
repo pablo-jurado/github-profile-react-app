@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
 import _token from './_token'
 import './index.css';
@@ -17,6 +17,12 @@ let mainState = {
   repos: null
 }
 
+let _localToken = ''
+
+if (process.env.NODE_ENV === 'development') {
+    _localToken = _token
+}
+
 function checkIsLoading () {
   if ((mainState.userData) && (mainState.repos)) {
     mainState.isLoading = false
@@ -27,7 +33,7 @@ function checkIsLoading () {
 
 function getGitProfile (user) {
   let api = 'https://api.github.com/users/'
-  let gitURL = api + user + _token
+  let gitURL = api + user + _localToken
   var request = new XMLHttpRequest()
   request.open('GET', gitURL, true)
   request.onload = function() {
@@ -49,7 +55,7 @@ function getGitProfile (user) {
 
 function getRepos (user) {
   let api = 'https://api.github.com/users/'
-  let gitURL = api + user + '/repos' + _token
+  let gitURL = api + user + '/repos' + _localToken
   var request = new XMLHttpRequest()
   request.open('GET', gitURL, true)
   request.onload = function() {
