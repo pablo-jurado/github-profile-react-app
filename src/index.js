@@ -25,8 +25,6 @@ if (process.env.NODE_ENV === 'development') {
 
 function checkIsLoading () {
   if ((mainState.userData) && (mainState.repos)) {
-    mainState.isLoading = false
-    mainState.isUserFound = true
     renderNow()
   }
 }
@@ -39,6 +37,8 @@ function getGitProfile (user) {
   request.onload = function() {
     if (request.status >= 200 && request.status < 400) {
 
+      mainState.isUserFound = true
+      mainState.isLoading = false
       mainState.userName = user
       mainState.userData = JSON.parse(request.responseText)
       checkIsLoading()
@@ -46,6 +46,7 @@ function getGitProfile (user) {
     } else {
       console.log('user not found', request.responseText)
       mainState.isUserFound = false
+      mainState.isLoading = false
       renderNow()
     }
   }
@@ -60,16 +61,29 @@ function getRepos (user) {
   request.open('GET', gitURL, true)
   request.onload = function() {
     if (request.status >= 200 && request.status < 400) {
+
+      mainState.isLoading = false
       mainState.repos = JSON.parse(request.responseText)
       checkIsLoading()
-    } else { console.log(request.responseText) }
+
+    } else {
+      console.log('user not found', request.responseText)
+      mainState.isUserFound = false
+      mainState.isLoading = false
+      renderNow()
+    }
   }
   request.onerror = (e)=> console.log(e)
   request.send()
 }
 
-getGitProfile('pablo-jurado')
-getRepos('pablo-jurado')
+function upDateState (name) {
+  mainState.isLoading = true
+  getGitProfile(name)
+  getRepos(name)
+}
+
+
 
 class Search extends React.Component {
   constructor(props) {
@@ -78,24 +92,27 @@ class Search extends React.Component {
 
     this.handleChange = this.handleChange.bind(this)
     this.handleClick = this.handleClick.bind(this)
+    this.handleKeyPress = this.handleKeyPress.bind(this)
   }
 
   handleChange(event) {
     this.setState({value: event.target.value})
   }
 
-  handleClick (event) {
+  handleKeyPress(target) {
     let name = this.state.value
-    console.log('name: ' + name)
-    mainState.isLoading = true
-    getGitProfile(name)
-    getRepos(name)
+    if(target.charCode === 13)  upDateState(name)
+  }
+
+  handleClick () {
+    let name = this.state.value
+    upDateState(name)
   }
 
   render() {
     return (
       <div className="search">
-        <input type="text" placeholder="pablo-jurado" value={this.state.value} onChange={this.handleChange} />
+        <input type="text" placeholder="pablo-jurado" value={this.state.value} onChange={this.handleChange} onKeyPress={this.handleKeyPress}/>
         <input onClick={this.handleClick} type="submit" value="Search User" />
       </div>
     )
@@ -104,13 +121,20 @@ class Search extends React.Component {
 
 function App(props) {
   if(props.isLoading) {
-    let msg = 'loading'
-    if (!props.isUserFound) msg = 'Sorry User Not Found'
     return (
       <div className="app">
         <Header />
         <Search />
-        { Feedback(msg) }
+        { Feedback('loading') }
+        <Footer />
+      </div>
+    )
+  } else if(!props.isUserFound) {
+    return (
+      <div className="app">
+        <Header />
+        <Search />
+        { Feedback('Sorry user not found') }
         <Footer />
       </div>
     )
