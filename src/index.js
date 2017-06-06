@@ -5,7 +5,6 @@ import './index.css';
 
 import Header from './Header'
 import Avatar from './Avatar'
-import Feedback from './Feedback'
 import Repos from './Repos'
 import Footer from './Footer'
 
@@ -23,10 +22,17 @@ if (process.env.NODE_ENV === 'development') {
     _localToken = _token
 }
 
-function checkIsLoading () {
+function checkUserDataAndRepos () {
   if ((mainState.userData) && (mainState.repos)) {
     renderNow()
   }
+}
+
+function userNotFound () {
+  mainState.isLoading = false
+  mainState.userData = null
+  mainState.repos = null
+  renderNow()
 }
 
 function getGitProfile (user) {
@@ -40,15 +46,13 @@ function getGitProfile (user) {
       mainState.isLoading = false
       mainState.userName = user
       mainState.userData = JSON.parse(request.responseText)
-      checkIsLoading()
+      checkUserDataAndRepos()
 
     } else {
-      console.log('user not found', request.responseText)
-      mainState.isLoading = false
-      renderNow()
+      userNotFound()
     }
   }
-  request.onerror = (e)=> console.log(e)
+  request.onerror = (e)=> userNotFound()
   request.send()
 }
 
@@ -62,15 +66,13 @@ function getRepos (user) {
 
       mainState.isLoading = false
       mainState.repos = JSON.parse(request.responseText)
-      checkIsLoading()
+      checkUserDataAndRepos()
 
     } else {
-      console.log('user not found', request.responseText)
-      mainState.isLoading = false
-      renderNow()
+      userNotFound()
     }
   }
-  request.onerror = (e)=> console.log(e)
+  request.onerror = (e)=> userNotFound()
   request.send()
 }
 
@@ -81,15 +83,6 @@ function upDateState (name) {
 }
 
 upDateState('pablo-jurado')
-
-function Search(props) {
-  return (
-    <div className="search">
-      <input type="text" placeholder="pablo-jurado" onChange={ updateValue } onKeyPress={ handleKeyPress }/>
-      <input onClick={ handleClick } type="submit" value="Search User" />
-    </div>
-  )
-}
 
 function handleKeyPress (target) {
     if (target.charCode === 13) {
@@ -106,20 +99,30 @@ function handleClick () {
   upDateState(mainState.searchVal)
 }
 
+function Search(props) {
+  return (
+    <div className="search">
+      <input type="text" placeholder="pablo-jurado" onChange={ updateValue } onKeyPress={ handleKeyPress }/>
+      <input onClick={ handleClick } type="submit" value="Search User" />
+    </div>
+  )
+}
+
 function App(props) {
     return (
-    <div>
+    <div className="app">
+      { Header() }
       { Search(props) }
       <div className="wrapper">
         { Avatar(props) }
         { Repos(props) }
       </div>
+      { Footer() }
     </div>
   )
 }
 
 function renderNow () {
-  console.log('render | isLoading: ' + mainState.isLoading);
   ReactDOM.render(App(mainState), document.getElementById('root'))
 }
 
