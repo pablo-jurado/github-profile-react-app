@@ -4,6 +4,7 @@ import _token from './_token'
 import './index.css';
 
 import Header from './Header'
+import Search from './Search'
 import Avatar from './Avatar'
 import Repos from './Repos'
 import Footer from './Footer'
@@ -84,30 +85,6 @@ function upDateState (name) {
 
 upDateState('pablo-jurado')
 
-function handleKeyPress (target) {
-    if (target.charCode === 13) {
-      updateValue(target)
-      handleClick()
-   }
- }
-
-function updateValue (event) {
-  mainState.searchVal = event.target.value
-}
-
-function handleClick () {
-  upDateState(mainState.searchVal)
-}
-
-function Search(props) {
-  return (
-    <div className="search">
-      <input type="text" placeholder="pablo-jurado" onChange={ updateValue } onKeyPress={ handleKeyPress }/>
-      <input onClick={ handleClick } type="submit" value="Search User" />
-    </div>
-  )
-}
-
 function App(props) {
     return (
     <div className="app">
@@ -127,3 +104,8 @@ function renderNow () {
 }
 
 renderNow()
+
+export {
+    upDateState,
+    mainState
+}
