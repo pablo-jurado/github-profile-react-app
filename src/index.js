@@ -11,7 +11,7 @@ import Footer from './Footer'
 
 let mainState = {
   isLoading: true,
-  isUserFound: false,
+  searchVal: null,
   userName: null,
   userData: null,
   repos: null
@@ -37,7 +37,6 @@ function getGitProfile (user) {
   request.onload = function() {
     if (request.status >= 200 && request.status < 400) {
 
-      mainState.isUserFound = true
       mainState.isLoading = false
       mainState.userName = user
       mainState.userData = JSON.parse(request.responseText)
@@ -45,7 +44,6 @@ function getGitProfile (user) {
 
     } else {
       console.log('user not found', request.responseText)
-      mainState.isUserFound = false
       mainState.isLoading = false
       renderNow()
     }
@@ -68,7 +66,6 @@ function getRepos (user) {
 
     } else {
       console.log('user not found', request.responseText)
-      mainState.isUserFound = false
       mainState.isLoading = false
       renderNow()
     }
@@ -83,74 +80,42 @@ function upDateState (name) {
   getRepos(name)
 }
 
+upDateState('pablo-jurado')
 
+function Search(props) {
+  return (
+    <div className="search">
+      <input type="text" placeholder="pablo-jurado" onChange={ updateValue } onKeyPress={ handleKeyPress }/>
+      <input onClick={ handleClick } type="submit" value="Search User" />
+    </div>
+  )
+}
 
-class Search extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {value: ''}
+function handleKeyPress (target) {
+    if (target.charCode === 13) {
+      updateValue(target)
+      handleClick()
+   }
+ }
 
-    this.handleChange = this.handleChange.bind(this)
-    this.handleClick = this.handleClick.bind(this)
-    this.handleKeyPress = this.handleKeyPress.bind(this)
-  }
+function updateValue (event) {
+  mainState.searchVal = event.target.value
+}
 
-  handleChange(event) {
-    this.setState({value: event.target.value})
-  }
-
-  handleKeyPress(target) {
-    let name = this.state.value
-    if(target.charCode === 13)  upDateState(name)
-  }
-
-  handleClick () {
-    let name = this.state.value
-    upDateState(name)
-  }
-
-  render() {
-    return (
-      <div className="search">
-        <input type="text" placeholder="pablo-jurado" value={this.state.value} onChange={this.handleChange} onKeyPress={this.handleKeyPress}/>
-        <input onClick={this.handleClick} type="submit" value="Search User" />
-      </div>
-    )
-  }
+function handleClick () {
+  upDateState(mainState.searchVal)
 }
 
 function App(props) {
-  if(props.isLoading) {
     return (
-      <div className="app">
-        <Header />
-        <Search />
-        { Feedback('loading') }
-        <Footer />
+    <div>
+      { Search(props) }
+      <div className="wrapper">
+        { Avatar(props) }
+        { Repos(props) }
       </div>
-    )
-  } else if(!props.isUserFound) {
-    return (
-      <div className="app">
-        <Header />
-        <Search />
-        { Feedback('Sorry user not found') }
-        <Footer />
-      </div>
-    )
-  } else {
-    return (
-      <div className="app">
-        <Header />
-        <Search />
-        <div className="wrapper">
-          { Avatar(props.userData) }
-          { Repos(props.repos) }
-        </div>
-        <Footer />
-      </div>
-    )
-  }
+    </div>
+  )
 }
 
 function renderNow () {
