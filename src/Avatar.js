@@ -18,9 +18,9 @@ function Avatar (props) {
   return (
     <div className='avatar'>
       <h1>{ props.userData.name }</h1>
-      <img src={props.userData.avatar_url} alt="github user"/>
-      <span>{props.userData.bio}</span>
-      <span><a href={props.userData.html_url} target="_blank" rel="noopener noreferrer">GitHub profile</a></span>
+      <img src={ props.userData.avatar_url } alt="github user"/>
+      <span>{ props.userData.bio }</span>
+      <span><a href={ props.userData.html_url } target="_blank" rel="noopener noreferrer">GitHub profile</a></span>
     </div>
   )
 }

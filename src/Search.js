@@ -1,30 +1,21 @@
-import React from 'react';
-import { upDateState, mainState } from './index';
-
-
+import React from 'react'
+import { makeAjaxCall, mainState } from './index'
 
 function handleKeyPress (target) {
-    if (target.charCode === 13) {
-      updateValue(target)
-      handleClick()
-   }
- }
-
-function updateValue (event) {
-  mainState.searchVal = event.target.value
+  if (target.charCode === 13) makeAjaxCall()
 }
 
-function handleClick () {
-  upDateState(mainState.searchVal)
+function onChangeUpdate (event) {
+  mainState.searchValue = event.target.value
 }
 
-function Search(props) {
+function Search(inputValue) {
   return (
     <div className="search">
-      <input type="text" placeholder="pablo-jurado" onChange={ updateValue } onKeyPress={ handleKeyPress }/>
-      <input onClick={ handleClick } type="submit" value="Search User" />
+      <input type="text" value={ inputValue } onChange={ onChangeUpdate } onKeyPress={ handleKeyPress }/>
+      <input onClick={ makeAjaxCall } type="submit" value="Search User" />
     </div>
   )
 }
 
-export default Search;
+export default Search

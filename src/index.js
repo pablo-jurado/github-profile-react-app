@@ -3,25 +3,22 @@ import ReactDOM from 'react-dom'
 import _token from './_token'
 import './index.css';
 
-import Header from './Header'
+import UserHistory from './UserHistory'
 import Search from './Search'
 import Avatar from './Avatar'
 import Repos from './Repos'
-import Footer from './Footer'
 
 let mainState = {
   isLoading: true,
-  searchVal: null,
-  userName: null,
+  searchValue: 'pablo-jurado',
+  userName: [],
   userData: null,
   repos: null
 }
 
 let _localToken = ''
 
-if (process.env.NODE_ENV === 'development') {
-    _localToken = _token
-}
+if (process.env.NODE_ENV === 'development') _localToken = _token
 
 function userNotFound () {
   mainState.isLoading = false
@@ -29,16 +26,14 @@ function userNotFound () {
   mainState.repos = null
 }
 
-function getGitProfile (user) {
+function fetchGitProfile (user) {
   let api = 'https://api.github.com/users/'
   let gitURL = api + user + _localToken
   var request = new XMLHttpRequest()
   request.open('GET', gitURL, true)
   request.onload = function() {
     if (request.status >= 200 && request.status < 400) {
-
       mainState.isLoading = false
-      mainState.userName = user
       mainState.userData = JSON.parse(request.responseText)
     } else {
       userNotFound()
@@ -48,7 +43,7 @@ function getGitProfile (user) {
   request.send()
 }
 
-function getRepos (user) {
+function fetchRepos (user) {
   let api = 'https://api.github.com/users/'
   let gitURL = api + user + '/repos' + _localToken
   var request = new XMLHttpRequest()
@@ -65,27 +60,34 @@ function getRepos (user) {
   request.send()
 }
 
-function upDateState (name) {
+function makeAjaxCall () {
+  let name = mainState.searchValue
   mainState.isLoading = true
-  getGitProfile(name)
-  getRepos(name)
+  mainState.searchValue = ''
+  if (mainState.userName.indexOf(name) === -1) mainState.userName.push(name)
+  fetchGitProfile(name)
+  fetchRepos(name)
 }
-
-upDateState('pablo-jurado')
 
 function App(props) {
     return (
     <div className="app">
-      { Header() }
-      { Search(props) }
+      <header>GitHub Profile</header>
+      { UserHistory(props.userName) }
+      { Search(props.searchValue) }
       <div className="wrapper">
         { Avatar(props) }
-        { Repos(props) }
+        { Repos(props.repos) }
       </div>
-      { Footer() }
+      <footer>
+        Design and Develop by
+        <a href="http://pablojurado.com/" target="_blank" rel="noopener noreferrer">Pablo Jurado</a>
+      </footer>
     </div>
   )
 }
+
+makeAjaxCall()
 
 const rootEl = document.getElementById('root')
 
@@ -96,6 +98,6 @@ function render () {
 window.requestAnimationFrame(render)
 
 export {
-    upDateState,
-    mainState
+  makeAjaxCall,
+  mainState
 }
