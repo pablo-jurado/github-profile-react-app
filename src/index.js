@@ -23,17 +23,10 @@ if (process.env.NODE_ENV === 'development') {
     _localToken = _token
 }
 
-function checkUserDataAndRepos () {
-  if ((mainState.userData) && (mainState.repos)) {
-    renderNow()
-  }
-}
-
 function userNotFound () {
   mainState.isLoading = false
   mainState.userData = null
   mainState.repos = null
-  renderNow()
 }
 
 function getGitProfile (user) {
@@ -47,8 +40,6 @@ function getGitProfile (user) {
       mainState.isLoading = false
       mainState.userName = user
       mainState.userData = JSON.parse(request.responseText)
-      checkUserDataAndRepos()
-
     } else {
       userNotFound()
     }
@@ -64,11 +55,8 @@ function getRepos (user) {
   request.open('GET', gitURL, true)
   request.onload = function() {
     if (request.status >= 200 && request.status < 400) {
-
       mainState.isLoading = false
       mainState.repos = JSON.parse(request.responseText)
-      checkUserDataAndRepos()
-
     } else {
       userNotFound()
     }
@@ -99,11 +87,13 @@ function App(props) {
   )
 }
 
-function renderNow () {
-  ReactDOM.render(App(mainState), document.getElementById('root'))
-}
+const rootEl = document.getElementById('root')
 
-renderNow()
+function render () {
+  ReactDOM.render(App(mainState), rootEl)
+  window.requestAnimationFrame(render)
+}
+window.requestAnimationFrame(render)
 
 export {
     upDateState,

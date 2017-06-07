@@ -2,7 +2,7 @@ import React from 'react';
 
 function Avatar (props) {
   let msg = 'User Not Found'
-  let imgSrc = 'https://assets-cdn.github.com/images/modules/logos_page/Octocat.png'
+  let imgSrc = 'http://octodex.github.com/images/daftpunktocat-thomas.gif'
   if (props.userData === null) {
     if (props.isLoading) {
       msg = 'loading'
