@@ -34,6 +34,7 @@ function fetchGitProfile (user) {
   request.onload = function() {
     if (request.status >= 200 && request.status < 400) {
       mainState.isLoading = false
+      if (mainState.userName.indexOf(user) === -1) mainState.userName.push(user)
       mainState.userData = JSON.parse(request.responseText)
     } else {
       userNotFound()
@@ -64,7 +65,6 @@ function makeAjaxCall () {
   let name = mainState.searchValue
   mainState.isLoading = true
   mainState.searchValue = ''
-  if (mainState.userName.indexOf(name) === -1) mainState.userName.push(name)
   fetchGitProfile(name)
   fetchRepos(name)
 }
@@ -80,8 +80,7 @@ function App(props) {
         { Repos(props.repos) }
       </div>
       <footer>
-        Design and Develop by
-        <a href="http://pablojurado.com/" target="_blank" rel="noopener noreferrer">Pablo Jurado</a>
+        Design and Develop by <a href="http://pablojurado.com/" target="_blank" rel="noopener noreferrer">Pablo Jurado</a>
       </footer>
     </div>
   )

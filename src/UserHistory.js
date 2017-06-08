@@ -1,10 +1,11 @@
 import React from 'react'
 import { makeAjaxCall, mainState } from './index'
+import { CSSTransitionGroup } from 'react-transition-group'
 
 function Users (arr) {
   if (typeof arr !== 'object' || arr.length === 0) return
   let history = arr.map(function(user, index) {
-    if (user === '') return
+    if (user === '') return ''
     return (
       <li key={ index }>
         <a onClick={ handleHistoryClick.bind(null, user) }>{ user }</a>
@@ -21,7 +22,6 @@ function handleHistoryClick (user) {
 }
 
 function handleDeleteClick (item) {
-  console.log('delete user from state')
   mainState.userName = mainState.userName.filter(function (value) {
     return value !== item
   })
@@ -30,9 +30,9 @@ function handleDeleteClick (item) {
 function UserHistory(props) {
   return (
     <ul className="history">
-        { /* < ReactCSSTransition transitionName={'fade'} transitionEnterTimeout={200} transitionLeaveTimeout={200} > */ }
+        <CSSTransitionGroup transitionName={'fade'} transitionEnterTimeout={200} transitionLeaveTimeout={200}>
         { Users(props) }
-        { /* </ ReactCSSTransition >  */ }
+        </CSSTransitionGroup>
      </ul>
   )
 }
