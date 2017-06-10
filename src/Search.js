@@ -9,11 +9,11 @@ function onChangeUpdate (event) {
   mainState.searchValue = event.target.value
 }
 
-function Search(inputValue) {
+function Search (inputValue) {
   return (
-    <div className="search">
-      <input type="text" value={ inputValue } onChange={ onChangeUpdate } onKeyPress={ handleKeyPress }/>
-      <input onClick={ makeAjaxCall } type="submit" value="Search User" />
+    <div className='search'>
+      <input type='text' value={inputValue} onChange={onChangeUpdate} onKeyPress={handleKeyPress} />
+      <input onClick={makeAjaxCall} type='submit' value='Search User' />
     </div>
   )
 }
