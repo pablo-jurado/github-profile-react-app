@@ -45,4 +45,4 @@ npm run build
 
 ## Credits
 
-[Pablo Jurado](https://pablojurado.com).
+[Pablo Jurado](http://www.pablojurado.com).
