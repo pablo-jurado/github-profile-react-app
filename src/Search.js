@@ -1,5 +1,6 @@
 import React from 'react'
-import { makeAjaxCall, mainState } from './index'
+import { mainState } from './index'
+import { makeAjaxCall } from './App'
 
 function handleKeyPress (target) {
   if (target.charCode === 13) makeAjaxCall()
